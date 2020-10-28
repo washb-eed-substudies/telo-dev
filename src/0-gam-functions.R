@@ -148,7 +148,7 @@ fit_RE_gam <- function(d, Y, X, W=NULL, V=NULL, id="clusterid", family = "gaussi
     }
   }
   
-  return(list(fit=fit, dat=d))
+  return(list(fit=fit, dat=d, n=n.sub))
 }
 
 
@@ -158,7 +158,7 @@ Mode <- function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-predict_gam_diff <- function(fit, d, quantile_diff=c(0.25,0.75), Xvar, Yvar){
+predict_gam_diff <- function(fit, d, n, quantile_diff=c(0.25,0.75), Xvar, Yvar){
   
   d$dummy<-0
   
@@ -207,7 +207,7 @@ predict_gam_diff <- function(fit, d, quantile_diff=c(0.25,0.75), Xvar, Yvar){
   Zval <-  abs(point.diff/se.diff)
   Pval <- exp(-0.717*Zval - 0.416*Zval^2)
   
-  plotdf<-data.frame(Y=Yvar, X= Xvar, q1=d$X[q1_pos], q3=d$X[q3_pos], 
+  plotdf<-data.frame(Y=Yvar, X= Xvar, N=n, q1=d$X[q1_pos], q3=d$X[q3_pos], 
                      pred.q1=preds[q1_pos], pred.q3=preds[q3_pos], 
                      point.diff, lb.diff=lb.diff, ub.diff=ub.diff, Pval=Pval)
   

@@ -52,6 +52,7 @@ telo_dev <- inner_join(d, development, "childid")
 telo_dev <- telo_dev %>% 
   mutate(TS_t2_Z = scale(TS_t2, center=TRUE, scale=TRUE)[,1]) %>%
   mutate(TS_t3_Z = scale(TS_t3, center=TRUE, scale=TRUE)[,1]) %>%
+  mutate(delta_TS_Z = scale(delta_TS, center=TRUE, scale=TRUE)[,1]) %>%
   mutate(endline_CDI_understand_Z = scale(endline_CDI_understand, center=T, scale=T)[,1]) %>%
   mutate(endline_CDI_say_Z = scale(endline_CDI_say, center=T, scale=T)[,1]) %>%
   mutate(endline_communication_score_Z = scale(endline_communication_score, center=T, scale=T)[,1]) %>%
