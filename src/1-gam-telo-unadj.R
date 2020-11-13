@@ -230,12 +230,15 @@ saveRDS(H4_plot_data, here("figure-data/H4_unadj_spline_data.RDS"))
 
 
 #### Adjust all pvalues with BH procedure ####
+H1_res$H = 1
+H2_res$H = 2
+H3_res$H = 3
+H4_res$H = 4
 full_res <- rbind(H1_res, H2_res, H3_res, H4_res)
 
 full_res$BH.Pval <- p.adjust(full_res$Pval, method='BH')
 
-
-saveRDS(H1_res, here("results/unadjusted/H1_res.RDS"))
-saveRDS(H2_res, here("results/unadjusted/H2_res.RDS"))
-saveRDS(H3_res, here("results/unadjusted/H3_res.RDS"))
-saveRDS(H4_res, here("results/unadjusted/H4_res.RDS"))
+saveRDS(full_res %>% filter(H==1) %>% select(-H), here("results/unadjusted/H1_res.RDS"))
+saveRDS(full_res %>% filter(H==2) %>% select(-H), here("results/unadjusted/H2_res.RDS"))
+saveRDS(full_res %>% filter(H==3) %>% select(-H), here("results/unadjusted/H3_res.RDS"))
+saveRDS(full_res %>% filter(H==4) %>% select(-H), here("results/unadjusted/H4_res.RDS"))
