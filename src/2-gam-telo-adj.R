@@ -55,7 +55,7 @@ for(i in Xvars){
     print(i)
     print(j)
     res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
-    res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
+    res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H1_adj_models <- bind_rows(H1_adj_models, res)
   }
 }
@@ -66,7 +66,7 @@ for(i in Xvars){
 H1_adj_res <- NULL
 for(i in 1:nrow(H1_adj_models)){
   res <- data.frame(X=H1_adj_models$X[i], Y=H1_adj_models$Y[i])
-  preds <- predict_gam_diff(fit=H1_adj_models$fit[i][[1]], d=H1_adj_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H1_adj_models$fit[i][[1]], d=H1_adj_models$dat[i][[1]], H1_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H1_adj_res <-  bind_rows(H1_adj_res , preds$res)
 }
 H1_adj_res$adjusted <- 0
@@ -112,7 +112,7 @@ for(i in Xvars){
     print(i)
     print(j)
     res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
-    res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
+    res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H2_adj_models <- bind_rows(H2_adj_models, res)
   }
 }
@@ -121,8 +121,8 @@ for(i in Xvars){
 H2_adj_res <- NULL
 for(i in 1:nrow(H2_adj_models)){
   res <- data.frame(X=H2_adj_models$X[i], Y=H2_adj_models$Y[i])
-  preds <- predict_gam_diff(fit=H2_adj_models$fit[i][[1]], d=H2_adj_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
-  H2_adj_res <-  bind_rows(H2_adj_res , preds$res)
+  preds <- predict_gam_diff(fit=H2_adj_models$fit[i][[1]], d=H2_adj_models$dat[i][[1]], H2_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  H2_adj_res <-  bind_rows(H2_adj_res, preds$res)
 }
 H2_adj_res$adjusted <- 0
 
@@ -164,7 +164,7 @@ H3_adj_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars2)
-    res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
+    res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H3_adj_models <- bind_rows(H3_adj_models, res)
   }
 }
@@ -173,7 +173,7 @@ for(i in Xvars){
 H3_adj_res <- NULL
 for(i in 1:nrow(H3_adj_models)){
   res <- data.frame(X=H3_adj_models$X[i], Y=H3_adj_models$Y[i])
-  preds <- predict_gam_diff(fit=H3_adj_models$fit[i][[1]], d=H3_adj_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H3_adj_models$fit[i][[1]], d=H3_adj_models$dat[i][[1]], H3_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H3_adj_res <-  bind_rows(H3_adj_res , preds$res)
 }
 H3_adj_res$adjusted <- 0
@@ -218,7 +218,7 @@ for(i in Xvars){
     print(i)
     print(j)
     res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
-    res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
+    res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H4_adj_models <- bind_rows(H4_adj_models, res)
   }
 }
@@ -227,7 +227,7 @@ for(i in Xvars){
 H4_adj_res <- NULL
 for(i in 1:nrow(H4_adj_models)){
   res <- data.frame(X=H4_adj_models$X[i], Y=H4_adj_models$Y[i])
-  preds <- predict_gam_diff(fit=H4_adj_models$fit[i][[1]], d=H4_adj_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H4_adj_models$fit[i][[1]], d=H4_adj_models$dat[i][[1]], H4_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H4_adj_res <-  bind_rows(H4_adj_res , preds$res)
 }
 H4_adj_res$adjusted <- 0

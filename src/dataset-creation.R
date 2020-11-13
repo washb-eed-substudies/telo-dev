@@ -19,7 +19,7 @@ cdi <- read.csv("washb-bangladesh-cdi-year2.csv") %>%
 easq <- read.csv("washb-bangladesh-easq-year2.csv") %>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
   select(childid, endline_communication_score, 
-         endline_gross_motor_score, endline_personal_social_score, combined) %>%
+         endline_gross_motor_score, endline_personal_social_score, combined, agegroup) %>%
   rename(combined_easq = combined)
 efanotb <- read.csv("washb-bangladesh-efanotb-year2.csv")%>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
@@ -40,13 +40,22 @@ motor <- read.csv("washb-bangladesh-motormile-year1.csv")%>%
   select(childid, sit_nosupp, crawl_nosupp, stand_supp, 
          walk_supp, stand_nosupp, walk_nosupp)
 
-
+# join separate development datasets 
 development <- motor %>% full_join(cdi, 'childid') %>% full_join(efanotb, 'childid') %>% 
   full_join(eftower, "childid") %>% full_join(easq, 'childid') %>% left_join(home1, 'childid') %>%
   left_join(home2, 'childid') %>%
   mutate(childid = as.integer(childid))
   
+# join with telo-covariates dataset
 telo_dev <- inner_join(d, development, "childid")
+
+# age-standardize easq scores to the control group
+telo_dev <- telo_dev %>% group_by(tr, agegroup) %>% 
+  mutate(endline_communication_score_Z = scale(endline_communication_score, center=T, scale=T)[,1],
+         endline_personal_social_score_Z = scale(endline_personal_social_score, center=T, scale=T)[,1],
+         endline_gross_motor_score_Z = scale(endline_gross_motor_score, center=T, scale=T)[,1],
+         combined_easq_Z = scale(combined_easq, center=T, scale=T)[,1],) %>%
+  ungroup()
 
 # Z-score of telomere measurements
 telo_dev <- telo_dev %>% 
@@ -55,10 +64,6 @@ telo_dev <- telo_dev %>%
   mutate(delta_TS_Z = scale(delta_TS, center=TRUE, scale=TRUE)[,1]) %>%
   mutate(endline_CDI_understand_Z = scale(endline_CDI_understand, center=T, scale=T)[,1]) %>%
   mutate(endline_CDI_say_Z = scale(endline_CDI_say, center=T, scale=T)[,1]) %>%
-  mutate(endline_communication_score_Z = scale(endline_communication_score, center=T, scale=T)[,1]) %>%
-  mutate(endline_gross_motor_score_Z = scale(endline_gross_motor_score, center=T, scale=T)[,1]) %>%
-  mutate(endline_personal_social_score_Z = scale(endline_personal_social_score, center=T, scale=T)[,1]) %>%
-  mutate(combined_easq_Z = scale(combined_easq, center=T, scale=T)[,1]) %>%
   mutate(endline_A_not_B_score_Z = scale(endline_A_not_B_score, center=T, scale=T)[,1]) %>%
   mutate(endline_tower_test_Z = scale(endline_tower_test, center=T, scale=T)[,1]) %>%
   mutate(endline_CDI_say_Z = scale(endline_CDI_say, center=T, scale=T)[,1])
