@@ -255,18 +255,3 @@ saveRDS(H4_adj_res, here("results/adjusted/H4_adj_res.RDS"))
 
 #Save plot data
 #saveRDS(H4_adj_plot_data, paste0(dropboxDir,"results/stress-growth-models/figure-data/H4_adj_spline_data.RDS"))
-
-
-# Adjust pvalues with BH procedure
-H1_adj_res$H = 1
-H2_adj_res$H = 2
-H3_adj_res$H = 3
-H4_adj_res$H = 4
-full_res <- rbind(H1_adj_res, H2_adj_res, H3_adj_res, H4_adj_res)
-
-full_res$BH.Pval <- p.adjust(full_res$Pval, method='BH')
-
-saveRDS(full_res %>% filter(H==1) %>% select(-H), here("results/adjusted/H1_adj_res.RDS"))
-saveRDS(full_res %>% filter(H==2) %>% select(-H), here("results/adjusted/H2_adj_res.RDS"))
-saveRDS(full_res %>% filter(H==3) %>% select(-H), here("results/adjusted/H3_adj_res.RDS"))
-saveRDS(full_res %>% filter(H==4) %>% select(-H), here("results/adjusted/H4_adj_res.RDS"))

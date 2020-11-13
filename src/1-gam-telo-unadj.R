@@ -69,7 +69,7 @@ for(i in 1:nrow(H1_models)){
 saveRDS(H1_models, here("models/H1_models.RDS"))
 
 #Save results
-#saveRDS(H1_res, here("results/unadjusted/H1_res.RDS"))
+saveRDS(H1_res, here("results/unadjusted/H1_res.RDS"))
 
 
 #Save plots
@@ -119,7 +119,7 @@ for(i in 1:nrow(H2_models)){
 saveRDS(H2_models, here("models/H2_models.RDS"))
 
 #Save results
-#saveRDS(H2_res, here("results/unadjusted/H2_res.RDS"))
+saveRDS(H2_res, here("results/unadjusted/H2_res.RDS"))
 
 
 #Save plots
@@ -167,7 +167,7 @@ for(i in 1:nrow(H3_models)){
 saveRDS(H3_models, here("models/H3_models.RDS"))
 
 #Save results
-#saveRDS(H3_res, here("results/unadjusted/H3_res.RDS"))
+saveRDS(H3_res, here("results/unadjusted/H3_res.RDS"))
 
 
 #Save plots
@@ -218,7 +218,7 @@ for(i in 1:nrow(H4_models)){
 saveRDS(H4_models, here("models/H4_models.RDS"))
 
 #Save results
-#saveRDS(H4_res, here("results/unadjusted/H4_res.RDS"))
+saveRDS(H4_res, here("results/unadjusted/H4_res.RDS"))
 
 
 #Save plots
@@ -227,18 +227,3 @@ saveRDS(H4_models, here("models/H4_models.RDS"))
 #Save plot data
 saveRDS(H4_plot_data, here("figure-data/H4_unadj_spline_data.RDS"))
 
-
-
-#### Adjust all pvalues with BH procedure ####
-H1_res$H = 1
-H2_res$H = 2
-H3_res$H = 3
-H4_res$H = 4
-full_res <- rbind(H1_res, H2_res, H3_res, H4_res)
-
-full_res$BH.Pval <- p.adjust(full_res$Pval, method='BH')
-
-saveRDS(full_res %>% filter(H==1) %>% select(-H), here("results/unadjusted/H1_res.RDS"))
-saveRDS(full_res %>% filter(H==2) %>% select(-H), here("results/unadjusted/H2_res.RDS"))
-saveRDS(full_res %>% filter(H==3) %>% select(-H), here("results/unadjusted/H3_res.RDS"))
-saveRDS(full_res %>% filter(H==4) %>% select(-H), here("results/unadjusted/H4_res.RDS"))
