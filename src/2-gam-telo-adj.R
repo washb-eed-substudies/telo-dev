@@ -8,30 +8,21 @@ d<-readRDS(paste0(dropboxDir, "Data/Cleaned/Audrie/bangladesh-ee-telo-developmen
 #Set list of adjustment variables
 #Make vectors of adjustment variable names
 Wvars<-c("sex","birthord", "momage","momheight","momedu", 
-         "hfiacat", "Nlt18","Ncomp", "watmin", "walls", "floor", "elec", "asset_wardrobe",
-         "asset_table", "asset_chair", "asset_clock","asset_khat", "asset_chouki", 
-         "asset_radio", "asset_tv", "asset_refrig", "asset_bike", "asset_moto", "asset_sewmach", 
-         "asset_mobile", "n_cattle", "n_goat", "n_chicken")
+         "hfiacat", "Nlt18","Ncomp", "watmin", "walls", "floor", "HHwealth", 
+         "fci_t2", "diar7d_t2", "cesd_sum_t2", "life_viol_any_t3", "tr")
 
 Wvars[!(Wvars %in% colnames(d))]
 
 
 
 #Add in time varying covariates:
-
-#NOTES
-#Does monsoon_ut2 need to be replaced with monsoon_ht2 for growth measures? (and agemth_ut2 with agedays_ht2?)
-Wvars2<-c("monsoon_ht2", "ageday_ht2", "tr", "cesd_sum_t2", "diar7d_t2", "midline_stimulation") 
-Wvars3<-c("lenhei_med_t2", "weight_med_t2", "monsoon_ht2", "monsoon_ht3", "ageday_ht2", 
-          "ageday_ht3", "tr", "cesd_sum_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3", 
-          "life_viol_any_t3", "diar7d_t3", "midline_stimulation", "endline_stimulation") 
-
-
-W2_total <- c(Wvars, Wvars2) %>% unique(.)
-W3_total <- c(Wvars, Wvars3) %>% unique(.)
-
-Wvars2[!(Wvars2 %in% colnames(d))]
-Wvars3[!(Wvars3 %in% colnames(d))]
+H1_W <- c(Wvars, "ageday_ht2", "ageday_ht3", "agedays_easq", "fci_t3", "month_ht2", "month_ht3", "month_easq",
+          "diar7d_t3", "laz_t2", "waz_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3")
+H2_W <- c(Wvars, "ageday_ht2", "ageday_easq")
+H3_W <- c(Wvars)
+H4_W <- c(Wvars)
+H1_W[!(H1_W %in% colnames(d))]
+H1_W[!(H1_W %in% colnames(d))]
 
 
 #Loop over exposure-outcome pairs
@@ -39,22 +30,16 @@ Wvars3[!(Wvars3 %in% colnames(d))]
 #### Hypothesis 1 ####
 # change in telomere length between y1 and y2 and development year 2
 Xvars <- c("delta_TS")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
-pick_covariates_H1 <- function(j){
-  if(grepl("_t2", j)){Wset = W2_F2.W2_anthro}
-  if(grepl("_t3", j)){Wset = W2_F2.W3_anthro}
-  return(Wset)
-}
 #Fit models
 H1_adj_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H1_W)
     res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H1_adj_models <- bind_rows(H1_adj_models, res)
   }
@@ -69,7 +54,6 @@ for(i in 1:nrow(H1_adj_models)){
   preds <- predict_gam_diff(fit=H1_adj_models$fit[i][[1]], d=H1_adj_models$dat[i][[1]], H1_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H1_adj_res <-  bind_rows(H1_adj_res , preds$res)
 }
-H1_adj_res$adjusted <- 0
 
 #Make list of plots
 H1_adj_plot_list <- NULL
@@ -101,9 +85,8 @@ saveRDS(H1_adj_res, here("results/adjusted/H1_adj_res.RDS"))
 #### Hypothesis 2 ####
 # Telomere at y1 v. development year 2
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
 #Fit models
 H2_adj_models <- NULL
@@ -111,7 +94,7 @@ for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H2_W)
     res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H2_adj_models <- bind_rows(H2_adj_models, res)
   }
@@ -124,7 +107,6 @@ for(i in 1:nrow(H2_adj_models)){
   preds <- predict_gam_diff(fit=H2_adj_models$fit[i][[1]], d=H2_adj_models$dat[i][[1]], H2_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H2_adj_res <-  bind_rows(H2_adj_res, preds$res)
 }
-H2_adj_res$adjusted <- 0
 
 #Make list of plots
 H2_adj_plot_list <- NULL
@@ -157,13 +139,13 @@ saveRDS(H2_adj_res, here("results/adjusted/H2_adj_res.RDS"))
 #### Hypothesis 3 ####
 # telomere length at year 1 v. development at year 1
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("endline_CDI_understand", "endline_CDI_say")
+Yvars <- c("z_cdi_say_t2", "z_cdi_und_t2")
 
 #Fit models
 H3_adj_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars2)
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H3_W)
     res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H3_adj_models <- bind_rows(H3_adj_models, res)
   }
@@ -176,7 +158,6 @@ for(i in 1:nrow(H3_adj_models)){
   preds <- predict_gam_diff(fit=H3_adj_models$fit[i][[1]], d=H3_adj_models$dat[i][[1]], H3_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H3_adj_res <-  bind_rows(H3_adj_res , preds$res)
 }
-H3_adj_res$adjusted <- 0
 
 #Make list of plots
 H3_adj_plot_list <- NULL
@@ -207,9 +188,8 @@ saveRDS(H3_adj_res, here("results/adjusted/H3_adj_res.RDS"))
 #### Hypothesis 4 ####
 #Telomere length at year 2 v. development at year 2
 Xvars <- c("TS_t3_Z")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
 #Fit models
 H4_adj_models <- NULL
@@ -217,7 +197,7 @@ for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=Wvars3)
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H4_W)
     res <- data.frame(X=i, Y=j, N=res_adj$n, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H4_adj_models <- bind_rows(H4_adj_models, res)
   }
@@ -230,7 +210,6 @@ for(i in 1:nrow(H4_adj_models)){
   preds <- predict_gam_diff(fit=H4_adj_models$fit[i][[1]], d=H4_adj_models$dat[i][[1]], H4_adj_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H4_adj_res <-  bind_rows(H4_adj_res , preds$res)
 }
-H4_adj_res$adjusted <- 0
 
 #Make list of plots
 H4_adj_plot_list <- NULL

@@ -32,9 +32,8 @@ d <- readRDS(paste0(dropboxDir, "Data/Cleaned/Audrie/bangladesh-ee-telo-developm
 #### Hypothesis 1 ####
 # change in telomere length between y1 and y2 and development year 2
 Xvars <- c("delta_TS_Z")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
 #Fit models
 H1_models <- NULL
@@ -82,9 +81,8 @@ saveRDS(H1_plot_data, here("figure-data/H1_unadj_spline_data.RDS"))
 #### Hypothesis 2 ####
 # Telomere at y1 v. development year 2
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
 #Fit models
 H2_models <- NULL
@@ -132,7 +130,7 @@ saveRDS(H2_plot_data, here("figure-data/H2_unadj_spline_data.RDS"))
 #### Hypothesis 3 ####
 # telomere length at year 1 v. development at year 1
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("endline_CDI_understand", "endline_CDI_say")
+Yvars <- c("z_cdi_say_t2", "z_cdi_und_t2")
 
 #Fit models
 H3_models <- NULL
@@ -181,9 +179,8 @@ saveRDS(H3_plot_data, here("figure-data/H3_unadj_spline_data.RDS"))
 #### Hypothesis 4 ####
 #Telomere length at year 2 v. development at year 2
 Xvars <- c("TS_t3_Z")            
-Yvars <- c("endline_communication_score_Z", "endline_gross_motor_score_Z", 
-           "endline_personal_social_score_Z", "combined_easq_Z", "endline_A_not_B_score_Z", 
-           "endline_tower_test_Z") 
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
 
 #Fit models
 H4_models <- NULL
