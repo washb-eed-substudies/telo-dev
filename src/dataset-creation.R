@@ -58,7 +58,8 @@ motor <- read.csv("washb-bangladesh-motormile-year1.csv")%>%
          month_motor = month,
          who_sit = sit_nosupp, who_crawl = crawl_nosupp, 
          who_stand_supp = stand_supp, who_walk_supp = walk_supp, 
-         who_stand_nosupp = stand_nosupp, who_walk_nosup = walk_nosupp)
+         who_stand_nosupp = stand_nosupp, who_walk_nosup = walk_nosupp) %>%
+  mutate(sum_who = who_stand_supp+who_walk_supp+who_stand_nosupp+who_walk_nosup)
 
 # join separate development datasets 
 development <- motor %>% full_join(cdiy2_select, by= 'childid') %>% full_join(easq_select, by = 'childid')

@@ -1,7 +1,7 @@
 rm(list=ls())
 
 source(here::here("0-config.R"))
-source(here::here("src/0-gam-functions.R"))
+#source(here::here("src/0-gam-functions.R"))
 
 d <- readRDS(paste0(dropboxDir, "Data/Cleaned/Audrie/bangladesh-ee-telo-development-covariates.RDS"))
 
@@ -40,7 +40,7 @@ H1_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     res_unadj <- fit_RE_gam(d=d, X=i, Y=j,  W=NULL)
-    res <- data.frame(X=i, Y=j, N=res_unadj$n, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
+    res <- data.frame(X=i, Y=j, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
     H1_models <- bind_rows(H1_models, res)
   }
 }
@@ -49,7 +49,7 @@ for(i in Xvars){
 H1_res <- NULL
 for(i in 1:nrow(H1_models)){
   res <- data.frame(X=H1_models$X[i], Y=H1_models$Y[i])
-  preds <- predict_gam_diff(fit=H1_models$fit[i][[1]], d=H1_models$dat[i][[1]], H1_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H1_models$fit[i][[1]], d=H1_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H1_res <-  bind_rows(H1_res , preds$res)
 }
 
@@ -89,7 +89,7 @@ H2_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     res_unadj <- fit_RE_gam(d=d, X=i, Y=j,  W=NULL)
-    res <- data.frame(X=i, Y=j, N=res_unadj$n, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
+    res <- data.frame(X=i, Y=j, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
     H2_models <- bind_rows(H2_models, res)
   }
 }
@@ -98,7 +98,7 @@ for(i in Xvars){
 H2_res <- NULL
 for(i in 1:nrow(H2_models)){
   res <- data.frame(X=H2_models$X[i], Y=H2_models$Y[i])
-  preds <- predict_gam_diff(fit=H2_models$fit[i][[1]], d=H2_models$dat[i][[1]], n=H2_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H2_models$fit[i][[1]], d=H2_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H2_res <-  bind_rows(H2_res , preds$res)
 }
 
@@ -130,14 +130,14 @@ saveRDS(H2_plot_data, here("figure-data/H2_unadj_spline_data.RDS"))
 #### Hypothesis 3 ####
 # telomere length at year 1 v. development at year 1
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("z_cdi_say_t2", "z_cdi_und_t2")
+Yvars <- c("sum_who") #c("sum_who", "z_cdi_say_t2", "z_cdi_und_t2")
 
 #Fit models
 H3_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     res_unadj <- fit_RE_gam(d=d, X=i, Y=j,  W=NULL)
-    res <- data.frame(X=i, Y=j, N=res_unadj$n, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
+    res <- data.frame(X=i, Y=j, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
     H3_models <- bind_rows(H3_models, res)
   }
 }
@@ -146,7 +146,7 @@ for(i in Xvars){
 H3_res <- NULL
 for(i in 1:nrow(H3_models)){
   res <- data.frame(X=H3_models$X[i], Y=H3_models$Y[i])
-  preds <- predict_gam_diff(fit=H3_models$fit[i][[1]], d=H3_models$dat[i][[1]], n=H3_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H3_models$fit[i][[1]], d=H3_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H3_res <-  bind_rows(H3_res , preds$res)
 }
 
@@ -187,7 +187,7 @@ H4_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
     res_unadj <- fit_RE_gam(d=d, X=i, Y=j,  W=NULL)
-    res <- data.frame(X=i, Y=j, N=res_unadj$n, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
+    res <- data.frame(X=i, Y=j, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
     H4_models <- bind_rows(H4_models, res)
   }
 }
@@ -196,7 +196,7 @@ for(i in Xvars){
 H4_res <- NULL
 for(i in 1:nrow(H4_models)){
   res <- data.frame(X=H4_models$X[i], Y=H4_models$Y[i])
-  preds <- predict_gam_diff(fit=H4_models$fit[i][[1]], d=H4_models$dat[i][[1]], n=H4_models$N[i], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  preds <- predict_gam_diff(fit=H4_models$fit[i][[1]], d=H4_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
   H4_res <-  bind_rows(H4_res , preds$res)
 }
 

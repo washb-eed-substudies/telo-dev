@@ -18,6 +18,15 @@ library(devtools)
 library(kableExtra)
 library(here)
 
+if(!require(faraway)){
+  install.packages("faraway") 
+  library(faraway)
+}
+if(!require(washbgam)){
+  devtools::install_github("washb-eed-substudies/washbgam")
+  library(washbgam)
+}
+
 dropboxDir <- NULL
 if(dir.exists("C:/Users/andre/Dropbox/WASHB-EE-analysis/WBB-EE-analysis/")){ 
   dropboxDir <- "C:/Users/andre/Dropbox/WASHB-EE-analysis/WBB-EE-analysis/"
