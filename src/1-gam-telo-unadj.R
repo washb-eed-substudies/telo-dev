@@ -130,7 +130,7 @@ saveRDS(H2_plot_data, here("figure-data/H2_unadj_spline_data.RDS"))
 #### Hypothesis 3 ####
 # telomere length at year 1 v. development at year 1
 Xvars <- c("TS_t2_Z")            
-Yvars <- c("sum_who") #c("sum_who", "z_cdi_say_t2", "z_cdi_und_t2")
+Yvars <- c("sum_who", "z_cdi_say_t2", "z_cdi_und_t2")
 
 #Fit models
 H3_models <- NULL

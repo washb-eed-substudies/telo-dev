@@ -13,17 +13,25 @@ get_childid <- function(v1, v2){
   as.numeric(paste(as.character(v1), as.character(v2), sep=""))
 }
 
-## missing cdiy1
+cdiy1 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr1_std_17jan2021.dta") 
+names(cdiy1)
+cdiy1_select <- cdiy1 %>%
+  mutate(childid = get_childid(dataid, tchild)) %>% 
+  select(childid, agedays, month, z_age2mo_cdi_undyr1_all_no4, z_age2mo_cdi_sayyr1_all_no4) %>%
+  rename(agedays_cdi_t2 = agedays,
+         month_cdi_t2 = month,
+         z_cdi_und_t2 = z_age2mo_cdi_undyr1_all_no4,
+         z_cdi_say_t2 = z_age2mo_cdi_sayyr1_all_no4)
 
-cdiy2 <- read_dta("washb_cdi_std_22dec2020.dta") 
+cdiy2 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr2_std_17jan2021.dta") 
 names(cdiy2)
 cdiy2_select <- cdiy2 %>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
-  select(childid, agedays, month, z_age2mo_cdi_und_all_no4, z_age2mo_cdi_say_all_no4) %>%
+  select(childid, agedays, month, z_age2mo_cdi_undyr2_all_no4, z_age2mo_cdi_sayyr2_all_no4) %>%
   rename(agedays_cdi_t3 = agedays,
          month_cdi_t3 = month,
-         z_cdi_und_t3 = z_age2mo_cdi_und_all_no4,
-         z_cdi_say_t3 = z_age2mo_cdi_say_all_no4)
+         z_cdi_und_t3 = z_age2mo_cdi_undyr2_all_no4,
+         z_cdi_say_t3 = z_age2mo_cdi_sayyr2_all_no4)
 
 easq <- read_dta("washb_easq_std_22dec2020.dta") 
 names(easq)
@@ -62,10 +70,10 @@ motor <- read.csv("washb-bangladesh-motormile-year1.csv")%>%
   mutate(sum_who = who_stand_supp+who_walk_supp+who_stand_nosupp+who_walk_nosup)
 
 # join separate development datasets 
-development <- motor %>% full_join(cdiy2_select, by= 'childid') %>% full_join(easq_select, by = 'childid')
+development <- motor %>% full_join(cdiy1_select, by="childid") %>% 
+  full_join(cdiy2_select, by= 'childid') %>% full_join(easq_select, by = 'childid')
 
-dev_with_fci <- development %>% left_join(home1, 'childid') %>%
-  left_join(home2, 'childid') 
+dev_with_fci <- development %>% left_join(home1, 'childid') %>% left_join(home2, 'childid') 
 
 # save development dataset
 saveRDS(dev_with_fci, paste0(dropboxDir, "Data/Cleaned/Audrie/bangladesh-development.RDS"))
