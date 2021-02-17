@@ -16,17 +16,22 @@ Wvars[!(Wvars %in% colnames(d))]
 
 
 #Add in time varying covariates:
-H2_W <- c(Wvars, "ageday_ht2", "agedays_easq", "fci_t3", "month_ht2", "month_easq",
+H2_W <- c(Wvars, "ageday_ht2", "month_ht2", "fci_t3", 
           "diar7d_t3", "laz_t2", "waz_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3")
 H1_W <- c(H2_W, "ageday_ht3", "month_ht3")
-H3_W <- c(Wvars, "ageday_ht2", "agedays_motor",	"month_ht2", "month_motor") 
-H4_W <- c(Wvars, "ageday_ht3", "agedays_easq", "fci_t3", "month_ht3", "month_easq",
-          "diar7d_t3", "laz_t2", "waz_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3")
+H3_W <- c(Wvars, "ageday_ht2", "agedays_motor",	"month_ht2", "month_motor", "laz_t1_cat", "waz_t1_cat") 
+H4_W <- c(Wvars, "ageday_ht3", "month_ht3", "fci_t3",
+          "diar7d_t3", "laz_t2_cat", "waz_t2_cat", "cesd_sum_ee_t3", "pss_sum_mom_t3")
 H1_W[!(H1_W %in% colnames(d))]
 H2_W[!(H2_W %in% colnames(d))]
 H3_W[!(H3_W %in% colnames(d))]
 H4_W[!(H4_W %in% colnames(d))]
 
+
+add_t3_covariates <- function(j, W){
+  if(grepl("easq", j)){return (c(W, "agedays_easq", "month_easq"))}
+  else if(grepl("cdi", j) & grepl("t3", j)){return (c(W, "agedays_cdi_t3", "month_cdi_t3"))}
+}
 
 #Loop over exposure-outcome pairs
 
@@ -42,7 +47,7 @@ for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H1_W, forcedW=c("ageday_ht3", "ageday_ht2", "agedays_easq"))
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=add_t3_covariates(j, H1_W))
     res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H1_adj_models <- bind_rows(H1_adj_models, res)
   }
@@ -97,7 +102,7 @@ for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H2_W, forcedW=c("ageday_ht2",	"agedays_easq"))
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=add_t3_covariates(j, H2_W))
     res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H2_adj_models <- bind_rows(H2_adj_models, res)
   }
@@ -147,7 +152,9 @@ Yvars <- c("sum_who", "z_cdi_say_t2", "z_cdi_und_t2")
 H3_adj_models <- NULL
 for(i in Xvars){
   for(j in Yvars){
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H3_W, forcedW=c("ageday_ht2", "agedays_motor"))
+    print(i)
+    print(j)
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H3_W)
     res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H3_adj_models <- bind_rows(H3_adj_models, res)
   }
@@ -199,7 +206,7 @@ for(i in Xvars){
   for(j in Yvars){
     print(i)
     print(j)
-    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=H4_W, forcedW=c("ageday_ht3", "agedays_easq"))
+    res_adj <- fit_RE_gam(d=d, X=i, Y=j,  W=add_t3_covariates(j, H4_W))
     res <- data.frame(X=i, Y=j, fit=I(list(res_adj$fit)), dat=I(list(res_adj$dat)))
     H4_adj_models <- bind_rows(H4_adj_models, res)
   }
@@ -236,3 +243,4 @@ saveRDS(H4_adj_res, here("results/adjusted/H4_adj_res.RDS"))
 
 #Save plot data
 saveRDS(H4_adj_plot_data, here("figure-data/H4_adj_spline_data.RDS"))
+

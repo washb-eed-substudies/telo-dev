@@ -91,4 +91,133 @@ telo_dev <- telo_dev %>%
 d_hhwealth <- read.csv("C:/Users/Sophia/Documents/ee-secondary/sophia scripts/hhwealth.csv")
 telo_dev <- left_join(telo_dev, d_hhwealth, "dataid")
 
+
+# check covariate missingness
+Wvars<-c("sex","birthord", "momage","momheight","momedu", 
+         "hfiacat", "Nlt18","Ncomp", "watmin", "walls", "floor", "HHwealth", 
+         "fci_t2", "diar7d_t2", "cesd_sum_t2", "life_viol_any_t3", "tr")
+
+#Add in time varying covariates:
+H2_W <- c(Wvars, "ageday_ht2", "month_ht2", "fci_t3", 
+          "diar7d_t3", "laz_t2", "waz_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3")
+H1_W <- c(H2_W, "ageday_ht3", "month_ht3")
+H3_W <- c(Wvars, "ageday_ht2", "agedays_motor",	"month_ht2", "month_motor", "laz_t1", "waz_t1") 
+H4_W <- c(Wvars, "ageday_ht3", "month_ht3", "fci_t3",
+          "diar7d_t3", "laz_t2", "waz_t2", "cesd_sum_ee_t3", "pss_sum_mom_t3")
+H1_W[!(H1_W %in% colnames(telo_dev))]
+H2_W[!(H2_W %in% colnames(telo_dev))]
+H3_W[!(H3_W %in% colnames(telo_dev))]
+H4_W[!(H4_W %in% colnames(telo_dev))]
+
+
+add_t3_covariates <- function(j, W){
+  if(grepl("easq", j)){return (c(W, "agedays_easq", "month_easq"))}
+  else if(grepl("cdi", j) & grepl("t3", j)){return (c(W, "agedays_cdi_t3", "month_cdi_t3"))}
+}
+
+generate_miss_tbl <- function(Wvars, d){
+  W <- d %>% select(all_of(Wvars))  
+  miss <- data.frame(name = names(W), missing = colSums(is.na(W))/nrow(W), row.names = c(1:ncol(W)))
+  for (i in 1:nrow(miss)) {
+    miss$class[i] <- class(W[,which(colnames(W) == miss[i, 1])])
+  }
+  miss 
+}
+
+generate_miss_tbl(Wvars, telo_dev)
+
+# add missingness category to IPV covariate
+telo_dev$life_viol_any_t3<-as.factor(telo_dev$life_viol_any_t3)
+summary(telo_dev$life_viol_any_t3)
+telo_dev$life_viol_any_t3<-addNA(telo_dev$life_viol_any_t3)
+levels(telo_dev$life_viol_any_t3)[length(levels(telo_dev$life_viol_any_t3))]<-"Missing"
+summary(telo_dev$life_viol_any_t3)
+
+# add missingness category to caregiver report covariates
+summary(telo_dev$diar7d_t2)
+telo_dev$diar7d_t2<-as.factor(telo_dev$diar7d_t2)
+telo_dev$diar7d_t2<-addNA(telo_dev$diar7d_t2)
+levels(telo_dev$diar7d_t2)[length(levels(telo_dev$diar7d_t2))]<-"Missing"
+summary(telo_dev$diar7d_t2)
+
+Xvars <- c("delta_TS")            
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
+
+for (i in Xvars){
+  for (j in Yvars){
+    print(i)
+    print(j)
+    Wvars = add_t3_covariates(j, H1_W)
+    d_sub <- subset(telo_dev, !is.na(telo_dev[,i]) & !is.na(telo_dev[,j]))
+    print(generate_miss_tbl(Wvars, d_sub))
+  }
+}
+
+Xvars <- c("TS_t2_Z")            
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
+
+for (i in Xvars){
+  for (j in Yvars){
+    print(i)
+    print(j)
+    Wvars = add_t3_covariates(j, H2_W)
+    d_sub <- subset(telo_dev, !is.na(telo_dev[,i]) & !is.na(telo_dev[,j]))
+    print(generate_miss_tbl(Wvars, d_sub))
+  }
+}
+
+Xvars <- c("TS_t2_Z")            
+Yvars <- c("sum_who", "z_cdi_say_t2", "z_cdi_und_t2")
+
+for (i in Xvars){
+  for (j in Yvars){
+    print(i)
+    print(j)
+    Wvars = H3_W
+    d_sub <- subset(telo_dev, !is.na(telo_dev[,i]) & !is.na(telo_dev[,j]))
+    print(generate_miss_tbl(Wvars, d_sub))
+  }
+}
+
+Xvars <- c("TS_t3_Z")            
+Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
+           "z_cdi_say_t3", "z_cdi_und_t3") 
+
+for (i in Xvars){
+  for (j in Yvars){
+    print(i)
+    print(j)
+    Wvars = add_t3_covariates(j, H4_W)
+    d_sub <- subset(telo_dev, !is.na(telo_dev[,i]) & !is.na(telo_dev[,j]))
+    print(generate_miss_tbl(Wvars, d_sub))
+  }
+}
+
+# add missingness category to caregiver report covariates
+summary(telo_dev$diar7d_t3)
+telo_dev$diar7d_t3<-as.factor(telo_dev$diar7d_t3)
+telo_dev$diar7d_t3<-addNA(telo_dev$diar7d_t3)
+levels(telo_dev$diar7d_t3)[length(levels(telo_dev$diar7d_t3))]<-"Missing"
+summary(telo_dev$diar7d_t3)
+
+# create factor variable with missingness level for growth measurements at year 1 and year 2
+growth.var <- c("laz_t1", "waz_t1", "laz_t2", "waz_t2")
+for (i in growth.var) {
+  cutpoints <- c(-3, -2, -1, -0)  
+  cuts <- c(min(telo_dev[[i]], na.rm = T), cutpoints, max(telo_dev[[i]], na.rm = T))
+  new_var <- paste(i, "_cat", sep="")
+  telo_dev[[new_var]] <- cut(telo_dev[[i]], 
+                          cuts,
+                          right = FALSE,
+                          include.lowest = TRUE)
+  telo_dev[[new_var]] <- as.factor(telo_dev[[new_var]])
+  telo_dev[[new_var]] <- fct_explicit_na(telo_dev[[new_var]], "Missing")
+  telo_dev[[new_var]] <- factor(telo_dev[[new_var]], levels = levels(telo_dev[[new_var]]))
+}
+
+# check missingness of categorical growth covariates
+generate_miss_tbl(paste(growth.var, "_cat", sep=""), telo_dev)
+
 saveRDS(telo_dev, paste0(dropboxDir,"Data/Cleaned/Audrie/bangladesh-ee-telo-development-covariates.RDS"))
