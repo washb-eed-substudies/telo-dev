@@ -39,6 +39,9 @@ pval2 <- as.character(round(R1$Pval, 2))
 
 CI2 <- paste0(pointdiff2, "(" , lb2, ",", ub2, ")")
 
+BH2 <- as.character(round(R1$BH.Pval, 2))
+
+
 #unadjusted
 
 n2 <- as.character(U1$N)
@@ -64,7 +67,8 @@ tbl2 <- data.table(
   "Unadjusted Difference (95% CI)" = U.CI2, 
   "Unadjusted P-value" = U.pval2,
   "Adjusted Difference (95% CI)" = CI2, 
-  "Adjusted P-value" = pval2
+  "Adjusted P-value" = pval2,
+  "FDR Corrected P-value" = BH2
 )
 tbl2
 
@@ -96,6 +100,8 @@ pval3 <- as.character(round(R2$Pval, 2))
 
 CI3 <- paste0(pointdiff3, "(" , lb3, ",", ub3, ")")
 
+BH3 <- as.character(round(R2$BH.Pval, 2))
+
 #unadjusted
 
 n3 <- as.character(U2$N)
@@ -121,7 +127,8 @@ tbl3 <- data.table(
   "Unadjusted Difference (95% CI)" = U.CI3, 
   "Unadjusted P-value" = U.pval3,
   "Adjusted Difference (95% CI)" = CI3, 
-  "Adjusted P-value" = pval3
+  "Adjusted P-value" = pval3,
+  "FDR Corrected P-value" = BH3
 )
 tbl3
 
@@ -152,6 +159,8 @@ pval4 <- as.character(round(R3$Pval, 2))
 
 CI4 <- paste0(pointdiff4, "(" , lb4, ",", ub4, ")")
 
+BH4 <- as.character(round(R3$BH.Pval, 2))
+
 #unadjusted
 
 n4 <- as.character(U3$N)
@@ -176,7 +185,8 @@ tbl4 <- data.table(
   "Unadjusted Difference (95% CI)" = U.CI4, 
   "Unadjusted P-value" = U.pval4,
   "Adjusted Difference (95% CI)" = CI4, 
-  "Adjusted P-value" = pval4
+  "Adjusted P-value" = pval4,
+  "FDR Corrected P-value" = BH4
 )
 tbl4
 
@@ -208,6 +218,8 @@ pval5 <- as.character(round(R4$Pval, 2))
 
 CI5 <- paste0(pointdiff5, "(" , lb5, ",", ub5, ")")
 
+BH5 <- as.character(round(R4$BH.Pval, 2))
+
 #unadjusted
 
 n5 <- as.character(U4$N)
@@ -233,7 +245,8 @@ tbl5 <- data.table(
   "Unadjusted Difference (95% CI)" = U.CI5, 
   "Unadjusted P-value" = U.pval5,
   "Adjusted Difference (95% CI)" = CI5, 
-  "Adjusted P-value" = pval5
+  "Adjusted P-value" = pval5,
+  "FDR Corrected P-value" = BH5
 )
 tbl5
 
