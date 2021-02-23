@@ -57,8 +57,10 @@ U.pval2 <- as.character(round(U1$Pval, 2))
 U.CI2 <- paste0(U.pointdiff2, "(" , U.lb2, ",", U.ub2, ")")
 
 #Create table
+?data.table()
 
 tbl2 <- data.table(
+  HEADER = 
   "Outcome Domain" = outcomedomains2,
   "Outcome" = outcomes2,
   "n" = n2,
@@ -140,7 +142,7 @@ print(xtable(tbl3), type="html", file=here("tables/telo-dev_table3.html"))
 
 #Create vectors
 
-outcomes4 <- c("Understanding", "Expressing")
+outcomes4 <- c("WHO Motor Milestone", "Understanding", "Expressing")
 
 
 #Adjusted
