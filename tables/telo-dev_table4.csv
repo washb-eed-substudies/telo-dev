@@ -1,3 +1,4 @@
 "","Outcome","n","Q1 mean","Q3 mean","Unadjusted Difference (95% CI)","Unadjusted P-value","Adjusted Difference (95% CI)","Adjusted P-value","FDR Corrected P-value"
-"1","Understanding",NA,NA,NA,"(,)",NA,"(,)",NA,NA
-"2","Expressing",NA,NA,NA,"(,)",NA,"(,)",NA,NA
+"1","Understanding","649","-0.69","0.53","0.17(0.01,0.32)","0.03","0.06(-0.05,0.17)","0.29","0.84"
+"2","Expressing","650","-0.69","0.53","0(-0.09,0.09)","0.95","0.02(-0.07,0.11)","0.63","0.84"
+"3","Understanding","654","-0.67","0.53","0(-0.1,0.09)","0.94","-0.01(-0.1,0.08)","0.84","0.84"
