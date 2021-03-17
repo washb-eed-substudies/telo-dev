@@ -13,7 +13,7 @@ get_childid <- function(v1, v2){
   as.numeric(paste(as.character(v1), as.character(v2), sep=""))
 }
 
-cdiy1 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr1_std_17jan2021.dta") 
+cdiy1 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr1_std_5mar2021.dta") 
 names(cdiy1)
 cdiy1_select <- cdiy1 %>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
@@ -23,7 +23,7 @@ cdiy1_select <- cdiy1 %>%
          z_cdi_und_t2 = z_age2mo_cdi_undyr1_all_no4,
          z_cdi_say_t2 = z_age2mo_cdi_sayyr1_all_no4)
 
-cdiy2 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr2_std_17jan2021.dta") 
+cdiy2 <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/washb_cdiyr2_std_5mar2021.dta") 
 names(cdiy2)
 cdiy2_select <- cdiy2 %>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
@@ -33,7 +33,7 @@ cdiy2_select <- cdiy2 %>%
          z_cdi_und_t3 = z_age2mo_cdi_undyr2_all_no4,
          z_cdi_say_t3 = z_age2mo_cdi_sayyr2_all_no4)
 
-easq <- read_dta("washb_easq_std_22dec2020.dta") 
+easq <- read_dta("C:/Users/Sophia/Box/WASHB Child Development/wash-b_easq_std_5mar2021.dta") 
 names(easq)
 easq_select <- easq %>%
   mutate(childid = get_childid(dataid, tchild)) %>% 
