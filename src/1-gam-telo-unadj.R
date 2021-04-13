@@ -224,3 +224,44 @@ saveRDS(H4_res, here("results/unadjusted/H4_res.RDS"))
 #Save plot data
 saveRDS(H4_plot_data, here("figure-data/H4_unadj_spline_data.RDS"))
 
+#### hazard ratio for WHO motor milestones
+
+Xvars <- c("TS_t2_Z") 
+Yvars <- grep("who_", colnames(d), value=T)
+
+HR_models <- NULL
+for(i in Xvars){
+  for(j in Yvars){
+    res_unadj <- fit_HR_GAM(d=d, X=i, Y=j, age="agedays_motor", W=NULL)
+    res <- data.frame(X=i, Y=j, fit=I(list(res_unadj$fit)), dat=I(list(res_unadj$dat)))
+    HR_models <- bind_rows(HR_models, res)
+  }
+}
+
+HR_res <- NULL
+for(i in 1:nrow(HR_models)){
+  res <- data.frame(X=HR_models$X[i], Y=HR_models$Y[i])
+  preds <- predict_gam_HR(fit=HR_models$fit[i][[1]], d=HR_models$dat[i][[1]], quantile_diff=c(0.25,0.75), Xvar=res$X, Yvar=res$Y)
+  HR_res <-  bind_rows(HR_res , preds$res)
+}
+
+#Make list of plots
+HR_plot_list <- NULL
+HR_plot_data <- NULL
+for(i in 1:nrow(HR_models)){
+  res <- data.frame(X=HR_models$X[i], Y=HR_models$Y[i])
+  simul_plot <- gam_simul_CI(HR_models$fit[i][[1]], HR_models$dat[i][[1]], xlab=res$X, ylab=res$Y, title="")
+  HR_plot_list[[i]] <-  simul_plot$p
+  HR_plot_data <-  rbind(HR_plot_data, data.frame(Xvar=res$X, Yvar=res$Y, adj=0, simul_plot$pred))
+}
+
+
+#Save models
+saveRDS(HR_models, here("models/HR_models.RDS"))
+
+#Save results
+saveRDS(HR_res, here("results/unadjusted/HR_res.RDS"))
+
+#Save plot data
+saveRDS(HR_plot_data, here("figure-data/HR_unadj_spline_data.RDS"))
+
