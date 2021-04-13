@@ -37,7 +37,7 @@ add_t3_covariates <- function(j, W){
 
 #### Hypothesis 1 ####
 # change in telomere length between y1 and y2 and development year 2
-Xvars <- c("delta_TS")            
+Xvars <- c("delta_TS_Z")            
 Yvars <- c("z_comm_easq", "z_motor_easq", "z_personal_easq", "z_combined_easq", 
            "z_cdi_say_t3", "z_cdi_und_t3") 
 
