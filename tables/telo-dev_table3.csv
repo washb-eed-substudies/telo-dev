@@ -1,7 +1,0 @@
-"","Outcome Domain","Outcome","n","Q1 mean","Q3 mean","Unadjusted Difference (95% CI)","Unadjusted P-value","Adjusted Difference (95% CI)","Adjusted P-value","FDR Corrected P-value"
-"1","Extended Ages and Stages Questionnaire","Communication Score","616","-0.64","0.54","-0.01(-0.1,0.08)","0.81","0.01(-0.08,0.09)","0.88","0.88"
-"2","","Gross Motor Score","614","-0.66","0.56","0.05(-0.04,0.15)","0.29","0.03(-0.09,0.15)","0.63","0.88"
-"3","","Personal Social Score","617","-0.64","0.55","0.01(-0.12,0.14)","0.89","-0.02(-0.12,0.08)","0.74","0.88"
-"4","","Combined","616","-0.64","0.55","0(-0.1,0.09)","0.94","0.03(-0.07,0.12)","0.58","0.88"
-"5","Executive Function Evalulation","A not B Score","623","-0.64","0.53","0.02(-0.07,0.11)","0.67","0.2(-0.05,0.45)","0.11","0.34"
-"6","","Tower Test Score","622","-0.65","0.53","0.01(-0.08,0.11)","0.8","0.27(0.02,0.52)","0.04","0.22"
