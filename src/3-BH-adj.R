@@ -53,7 +53,8 @@ full_adj_res <- full_adj_res %>% group_by(H) %>%
   ungroup() %>%
   as.data.frame()
 
-who_mm <- grep("who_", colnames(d), value=T)
+who_mm <- c("who_sit","who_crawl","who_stand_supp","who_walk_supp",
+            "who_stand_nosupp","who_walk_nosup")
 
 H1$BH.Pval = (full_res %>% filter(H==1))$BH.Pval
 H2$BH.Pval = (full_res %>% filter(H==2))$BH.Pval
